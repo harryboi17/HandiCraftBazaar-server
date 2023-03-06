@@ -3,6 +3,7 @@ const express=require('express')
 const mongoose=require('mongoose')
 const cors=require('cors')
 const body_parser=require('body-parser')
+const dotenv=require('dotenv')
 
 //MODULE EXPORTS
 const authRouter=require('./routes/auth');
@@ -12,13 +13,15 @@ const userRouter = require('./routes/user');
 
 //INITIALIZATIONS
 const app=express();
-const PORT=4999
-const DB="mongodb+srv://sahaj_279:chennaiexpress1A@cluster0.fktjfco.mongodb.net/sahajdb"
+dotenv.config({path:'./config/config.env'})
+const PORT=process.env.PORT
+const DB=process.env.DB 
 
 //MIDDLEWARES
 app.use(cors())
 app.use(body_parser.urlencoded({extended:true}))
-app.use(body_parser.json())
+// app.use(body_parser.json())
+app.use(express.json())
 
 //CONNECTIONS
 mongoose.set("strictQuery", false);
@@ -39,6 +42,6 @@ app.get('/',(req,res)=>{
 
 //LISTENING TO THE SERVER
 app.listen(PORT,()=>{
-    console.log("Server started at port "+`${PORT}`);
+    console.log(`Server started at port ${PORT}`);
 })
 
