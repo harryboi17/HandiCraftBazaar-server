@@ -3,11 +3,8 @@ const authRouter = express.Router();
 const User = require("../models/UserModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const authmiddleware = require("../middlewares/authmiddleware");
+const authMiddleware = require("../middlewares/auth_middleware");
 
-authRouter.get("/auth", (req, res) => {
-  res.json({ auth: "welcomes you" });
-});
 //SIGN-UP ROUTE
 authRouter.post("/api/signup", async (req, res) => {
   try {
@@ -17,7 +14,7 @@ authRouter.post("/api/signup", async (req, res) => {
     if (existingUser) {
       return res
         .status(400)
-        .json({ message: "user with same email already exists" });
+        .json({ message: "User with same email already exists." });
     }
     hashedPass = await bcrypt.hash(password, 8);
     let user = new User({
@@ -38,16 +35,16 @@ authRouter.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    //does the email exists in db?
-    //is the pass correct
-    //generate token
+    //1 we check does the email exists in db
+    //2 is the pass correct
+    //3 generate token
 
     //1
     const user = await User.findOne({ email });
     if (!user) {
       return res
         .status(400)
-        .json({ message: "User does not exist, create a new account" });
+        .json({ message: "User does not exist, create a new account." });
     }
     //2
     match = await bcrypt.compare(password, user.password);
@@ -78,14 +75,13 @@ authRouter.post("/isTokenValid", async (req, res) => {
   }
 });
 
-authRouter.get('/getUserData',authmiddleware ,async (req,res)=>{
+authRouter.get("/getUserData", authMiddleware, async (req, res) => {
   try {
-    const user=await User.findById(req.userid);
-    res.json({...user._doc,token:req.token});
+    const user = await User.findById(req.userid);
+    res.json({ ...user._doc, token: req.token });
   } catch (e) {
     return res.status(500).json({ error: e.message });
-    
   }
-})
+});
 
 module.exports = authRouter;
