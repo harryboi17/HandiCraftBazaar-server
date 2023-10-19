@@ -15,15 +15,14 @@ const adminMiddleware = async (req, res, next) => {
         .status(401)
         .json({ message: "Access token not verified, Unauthorized user" });
 
-    const userId = isVerified.id;
-    const user = await User.findById(userId);
+    const user = await User.findById(isVerified.id);
 
     if (user.type == "user" || user.type == "super admin")
       return res
         .status(401)
-        .json({ message: "You are not an admin, Unauthorized user" });
+        .json({ message: "You are not a seller, Unauthorized user" });
 
-    req.userid = userId;
+    req.userid = isVerified.id;
     next();
   } catch (error) {
     res.status(500).json({ error: error.message });

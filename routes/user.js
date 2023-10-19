@@ -125,7 +125,7 @@ userRouter.post("/api/order", authMiddleware, async (req, res) => {
 //Getting all orders of a particular user
 userRouter.get("/api/get-all-orders", authMiddleware, async (req, res) => {
   try {
-    let orders = await Order.find({ userid: req.userid });
+    let orders = await Order.find({ userId: req.userid });
     res.json(orders);
   } catch (error) {
     res.status(500).json({ error: error.message });

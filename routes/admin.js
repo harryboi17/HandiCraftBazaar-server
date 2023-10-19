@@ -48,7 +48,7 @@ adminRouter.get("/admin/all-orders", adminMiddleware, async (req, res) => {
   }
 });
 
-//Updating status of order
+// Updating status of order
 adminRouter.patch(
   "/admin/update-status-of-order",
   adminMiddleware,
@@ -57,7 +57,6 @@ adminRouter.patch(
       const { id } = req.body;
       let order = await Order.findById(id);
       order.status += 1;
-
       order = await order.save();
       res.json(order);
     } catch (error) {
