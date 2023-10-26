@@ -20,9 +20,11 @@ authRouter.post("/api/signup", async (req, res) => {
     let user = new User({
       email,
       name,
-      password: hashedPass,
+      password: password,
     });
 
+    user = await user.save();
+    user.password = hashedPass;
     user = await user.save();
     res.json(user);
   } catch (error) {

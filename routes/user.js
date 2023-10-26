@@ -64,6 +64,18 @@ userRouter.post("/api/save-address", authMiddleware, async (req, res) => {
   }
 });
 
+//for becoming seller
+userRouter.post("/api/turn-seller", authMiddleware, async (req, res) => {
+  try {
+    let user = await User.findById(req.userid);
+    user.type = "admin";
+    user = await user.save();
+    res.json();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 //Place an order
 userRouter.post("/api/order", authMiddleware, async (req, res) => {
   try {

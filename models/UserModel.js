@@ -24,9 +24,9 @@ const userSchema = mongoose.Schema({
     required: true,
     validate: {
       validator: (value) => {
-        return value.length > 6;
+        return value.length > 7;
       },
-      message: "Enter valid password",
+      message: "Password should have at least 8 characters",
     },
   },
   address: {
