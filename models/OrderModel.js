@@ -10,15 +10,16 @@ const orderSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  products: [
-    {
-      product: ProductSchema,
-      quantity: {
-        type: Number,
-        required: true,
-      },
-    },
-  ],
+  sellerId: {
+    type: String,
+    required: true,
+  },
+  product: ProductSchema,
+  quantity: {
+    type: Number,
+    required: true,
+  },
+
   totalPrice: {
     type: Number,
     required: true,

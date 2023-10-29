@@ -46,20 +46,6 @@ const userSchema = mongoose.Schema({
       },
     },
   ],
-  sellerOrders: [
-    {
-      product: ProductSchema,
-      userName: {
-        type: String,
-      },
-      userAddress: {
-        type: String,
-      },
-      userNumber: {
-        type: Number,
-      },
-    },
-  ],
 });
 
 module.exports = mongoose.model("User", userSchema);

@@ -39,17 +39,8 @@ adminRouter.get("/admin/all-products", adminMiddleware, async (req, res) => {
 adminRouter.get("/admin/all-orders", adminMiddleware, async (req, res) => {
   try {
     //the middleware proved that the user who sent the request is an admin
-    var orders = await Order.find({});
-    var allOrders = [];
-    for (let i = 0; i < orders.length; i++) {
-      for (let j = 0; j < orders[i].products.length; j++) {
-        if (orders[i].products[j].product.userid == req.userid) {
-          allOrders.push(orders[i]);
-        }
-      }
-    }
-
-    res.json(allOrders);
+    var orders = await Order.find({ sellerId: req.userid });
+    res.json(orders);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -92,7 +83,7 @@ adminRouter.delete(
 
 adminRouter.get("/admin/analytics", adminMiddleware, async (req, res) => {
   try {
-    let orders = await Order.find({});
+    let orders = await Order.find({ sellerId: req.userid });
     let totalEarnings = 0;
     let Pottery = 0;
     let Embroidery = 0;
@@ -100,33 +91,26 @@ adminRouter.get("/admin/analytics", adminMiddleware, async (req, res) => {
     let Paintings = 0;
     let Sculptures = 0;
     for (let i = 0; i < orders.length; i++) {
-      for (let j = 0; j < orders[i].products.length; j++) {
-        if (orders[i].products[j].product.userid == req.userid) {
-          let earning =
-            orders[i].products[j].quantity *
-            orders[i].products[j].product.price;
-          totalEarnings += earning;
-          switch (orders[i].products[j].product.category) {
-            case "Pottery":
-              Pottery += earning;
-              break;
-            case "Embroidery":
-              Embroidery += earning;
-              break;
-            case "Jewelry":
-              Jewelry += earning;
-              break;
-            case "Paintings":
-              Paintings += earning;
-              break;
-            case "Sculptures":
-              Sculptures += earning;
-              break;
+      totalEarnings += orders[i].totalPrice;
+      switch (orders[i].product.category) {
+        case "Pottery":
+          Pottery += orders[i].totalPrice;
+          break;
+        case "Embroidery":
+          Embroidery += orders[i].totalPrice;
+          break;
+        case "Jewelry":
+          Jewelry += orders[i].totalPrice;
+          break;
+        case "Paintings":
+          Paintings += orders[i].totalPrice;
+          break;
+        case "Sculptures":
+          Sculptures += orders[i].totalPrice;
+          break;
 
-            default:
-              break;
-          }
-        }
+        default:
+          break;
       }
     }
 
