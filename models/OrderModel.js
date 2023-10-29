@@ -1,26 +1,25 @@
 const mongoose = require("mongoose");
-const {ProductSchema}=require('./ProductModel');
+const { ProductSchema } = require("./ProductModel");
 
 const orderSchema = mongoose.Schema({
-  //order id, name, address, cart,userid
-
   address: {
     type: String,
     required: true,
   },
-  userid: {
+  userId: {
     type: String,
     required: true,
   },
-  products: [
-    {
-      product: ProductSchema,
-      quantity: {
-        type: Number,
-        required: true,
-      },
-    },
-  ],
+  sellerId: {
+    type: String,
+    required: true,
+  },
+  product: ProductSchema,
+  quantity: {
+    type: Number,
+    required: true,
+  },
+
   totalPrice: {
     type: Number,
     required: true,
@@ -31,10 +30,10 @@ const orderSchema = mongoose.Schema({
   },
   status: {
     type: Number,
-    default: 0, //0 means ordered, 1 means dispatched, 2 means out for delivery, 3 means delivered
+    default: 0, //0 means order placed, 1 means dispatched by seller, 2 means reached at city of user, 3 means delivered successfully
   },
 });
 
 const Order = mongoose.model("Order", orderSchema);
 
-module.exports = Order;
+module.exports = { Order, orderSchema };

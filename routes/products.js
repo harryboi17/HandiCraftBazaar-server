@@ -1,15 +1,12 @@
 const express = require("express");
 const productRouter = express.Router();
-const authmiddleware = require("../middlewares/authmiddleware");
-const {Product} = require("../models/ProductModel");
+const authMiddleware = require("../middlewares/auth_middleware");
+const { Product } = require("../models/ProductModel");
 
-productRouter.get("/api/getProducts", authmiddleware, async (req, res) => {
+productRouter.get("/api/getProducts", authMiddleware, async (req, res) => {
   //Get products filtered according to category
   try {
     var products = await Product.find({ category: req.query.category });
-    // if(products==null || products.length==0){
-    //     return res.json({message:'No products have been added yet'});
-    // }
     res.json(products);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -18,9 +15,9 @@ productRouter.get("/api/getProducts", authmiddleware, async (req, res) => {
 
 productRouter.get(
   "/api/getProducts/search/:name",
-  authmiddleware,
+  authMiddleware,
   async (req, res) => {
-    //Searchinng products by name in request parameters
+    //Searching products by name in request parameters
     try {
       //using regex to get products whose name starts with and contains the entered letters
       var products = await Product.find({
@@ -34,12 +31,12 @@ productRouter.get(
 );
 
 //Rating a product
-productRouter.post("/api/rate-product", authmiddleware, async (req, res) => {
+productRouter.post("/api/rate-product", authMiddleware, async (req, res) => {
   try {
     const { id, rating } = req.body;
     let product = await Product.findById(id);
-    // console.log(rating);
-    //the searching can be optimized ig
+    // BUG
+    // the searching can be optimized ig
     try {
       for (let i = 0; i < product.ratings.length; i++) {
         if (product.ratings[i].userId == req.userid) {

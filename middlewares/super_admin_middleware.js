@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/UserModel");
 
 //this middleware verifies the token,gets a user by the given id, verifies if that user is a seller or not
-const adminMiddleware = async (req, res, next) => {
+const superAdminMiddleware = async (req, res, next) => {
   try {
     const token = req.header("x-auth-token");
     if (!token)
@@ -17,10 +17,10 @@ const adminMiddleware = async (req, res, next) => {
 
     const user = await User.findById(isVerified.id);
 
-    if (user.type == "user" || user.type == "super admin")
+    if (user.type == "user" || user.type == "admin")
       return res
         .status(401)
-        .json({ message: "You are not a seller, Unauthorized user" });
+        .json({ message: "You are not an admin, Unauthorized user" });
 
     req.userid = isVerified.id;
     next();
@@ -29,4 +29,4 @@ const adminMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = adminMiddleware;
+module.exports = superAdminMiddleware;

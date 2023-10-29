@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const authmiddleware = async (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   try {
     const token = req.header("x-auth-token");
     if (!token)
@@ -12,15 +12,14 @@ const authmiddleware = async (req, res, next) => {
       return res
         .status(401)
         .json({ message: "Access token not verified, Unauthorized user" });
-    
-    //adding the id and token to the request
-    req.userid=isVerified.id ;
-    req.token=token;
-    next();
 
+    //adding the id and token to the request
+    req.userid = isVerified.id;
+    req.token = token;
+    next();
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-module.exports=authmiddleware;
+module.exports = authMiddleware;
