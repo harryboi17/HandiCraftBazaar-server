@@ -61,18 +61,19 @@ productRouter.get("/api/deal-of-the-day", async (req, res) => {
     let products = await Product.find({});
     // if (!products )
     //   return res.status(500).json({ message: "No product so no deal" });
+
     products = products.sort((a, b) => {
       let asum = 0;
       let bsum = 0;
       for (let i = 0; i < a.ratings.length; i++) {
         asum += a.ratings[i].rating;
       }
-      asum = asum / a.ratings.length;
+      asum = a.ratings.length == 0 ? 0 : asum / a.ratings.length;
 
       for (let i = 0; i < b.ratings.length; i++) {
         bsum += b.ratings[i].rating;
       }
-      bsum = bsum / b.ratings.length;
+      bsum = b.ratings.length == 0 ? 0 : bsum / b.ratings.length;
 
       return asum < bsum ? 1 : -1;
     });
