@@ -6,6 +6,10 @@ const { Product } = require("../models/ProductModel");
 productRouter.get("/api/getProducts", authMiddleware, async (req, res) => {
   //Get products filtered according to category
   try {
+    if (req.query.category == "All Categories") {
+      var products = await Product.find();
+      return res.json(products);
+    }
     var products = await Product.find({ category: req.query.category });
     res.json(products);
   } catch (error) {

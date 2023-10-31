@@ -10,6 +10,7 @@ const authRouter = require("./routes/auth");
 const adminRouter = require("./routes/admin");
 const productRouter = require("./routes/products");
 const userRouter = require("./routes/user");
+const superAdminRouter = require("./routes/superadmin");
 
 //INITIALIZATIONS
 const app = express();
@@ -30,6 +31,7 @@ mongoose.connect(DB).then(() => {
   app.use(adminRouter);
   app.use(productRouter);
   app.use(userRouter);
+  app.use(superAdminRouter);
 });
 //HOME PAGE
 app.get("/", (req, res) => {
