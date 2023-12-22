@@ -90,7 +90,7 @@ userRouter.get("/api/get-all-orders", authMiddleware, async (req, res) => {
 //PLACING ORDER
 userRouter.post("/api/order", authMiddleware, async (req, res) => {
   try {
-    const { cart, address, paymentMode } = req.body;
+    const { cart, address, paymentMode, totalPrice } = req.body;
     let products = [];
     for (let i = 0; i < cart.length; i++) {
       let product = await Product.findById(cart[i].product._id);
@@ -127,7 +127,7 @@ userRouter.post("/api/order", authMiddleware, async (req, res) => {
         userId: req.userid,
         sellerId: products[i].product.userid,
         orderedAt: new Date().getTime(),
-        phoneNumber,
+        phoneNumber:user.phoneNumber,
         paymentMode,
       });
       order = await order.save();
