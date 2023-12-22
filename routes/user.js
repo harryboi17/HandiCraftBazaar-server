@@ -54,9 +54,10 @@ userRouter.post("/api/remove-from-cart", authMiddleware, async (req, res) => {
 //save user address
 userRouter.post("/api/save-address", authMiddleware, async (req, res) => {
   try {
-    const { address } = req.body;
+    const { address, phoneNumber } = req.body;
     let user = await User.findById(req.userid);
     user.address = address;
+    user.phoneNumber = phoneNumber;
     user = await user.save();
     res.json(user);
   } catch (error) {
@@ -76,64 +77,6 @@ userRouter.post("/api/turn-seller", authMiddleware, async (req, res) => {
   }
 });
 
-//Place an order
-// userRouter.post("/api/order", authMiddleware, async (req, res) => {
-//   try {
-//     const { cart, totalPrice, address } = req.body;
-//     let products = [];
-//     for (let i = 0; i < cart.length; i++) {
-//       let product = await Product.findById(cart[i].product._id);
-//       //Bug
-//       //this algo has a problem as if some products were in stock so there quantity got reduced but if any product out of stock is found, we just return but we had already updated the quantity of prev products
-//       if (product.quantity >= cart[i].quantity) {
-//         product.quantity -= cart[i].quantity;
-//         // await product.save();
-//         products.push({ product, quantity: cart[i].quantity });
-//       } else {
-//         return res
-//           .status(400)
-//           .json({ message: `${product.name} is out of stock` });
-//       }
-//     }
-//     //this loop loops the products which are in stock and now saving them
-//     if (products.length > 0) {
-//       for (let i = 0; i < products.length; i++) {
-//         let p = products[i].product;
-//         await p.save();
-//       }
-//     }
-
-//     let user = await User.findById(req.userid);
-//     user.cart = [];
-//     user = await user.save();
-
-//     let order = new Order({
-//       products,
-//       totalPrice,
-//       address,
-//       userId: req.userid,
-//       orderedAt: new Date().getTime(),
-//     });
-
-//     for (let i = 0; i < products.length; i++) {
-//       let p = products[i].product;
-//       let sellerId = p.userid;
-//       let seller = await User.findById(sellerId);
-
-//       seller.sellerOrders.push({
-//         product: p,
-//         userName: user.name,
-//         userAddress: user.address,
-//       });
-//       seller = await seller.save();
-//     }
-//     order = await order.save();
-//     res.json(order);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
-
 //Getting all orders of a particular user
 userRouter.get("/api/get-all-orders", authMiddleware, async (req, res) => {
   try {
@@ -144,10 +87,10 @@ userRouter.get("/api/get-all-orders", authMiddleware, async (req, res) => {
   }
 });
 
-/////////
+//PLACING ORDER
 userRouter.post("/api/order", authMiddleware, async (req, res) => {
   try {
-    const { cart, address } = req.body;
+    const { cart, address, paymentMode } = req.body;
     let products = [];
     for (let i = 0; i < cart.length; i++) {
       let product = await Product.findById(cart[i].product._id);
@@ -184,20 +127,37 @@ userRouter.post("/api/order", authMiddleware, async (req, res) => {
         userId: req.userid,
         sellerId: products[i].product.userid,
         orderedAt: new Date().getTime(),
+        phoneNumber,
+        paymentMode,
       });
-      // let p = products[i].product;
-      // let sellerId = p.userid;
-      // let seller = await User.findById(sellerId);
-
-      // seller.sellerOrders.push({
-      //   product: p,
-      //   userName: user.name,
-      //   userAddress: user.address,
-      // });
-      // seller = await seller.save();
       order = await order.save();
     }
     res.json("order placed successfully");
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//Cancel / Return Order
+userRouter.post("/api/cancel-order", authMiddleware, async (req, res) => {
+  try {
+    const { orderId, status, paymentMode } = req.body;
+    if (status < 3) {
+      //cancel order
+      if (paymentMode == 1) {
+        //Stripe
+        //Generate refund
+      }
+      //Set status of order to be cancelled
+    } else {
+      //return order
+      if (paymentMode == 1) {
+        //Stripe
+        //Generate refund
+      }
+      //Return message that delivery guy will reach soon and refund will be generated within 5 days
+      res.json("Refund will be generated in 5-7 working days.");
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

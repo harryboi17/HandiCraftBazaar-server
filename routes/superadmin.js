@@ -1,9 +1,9 @@
 const express = require("express");
 const superAdminRouter = express.Router();
 const { Product } = require("../models/ProductModel");
-const { Order } = require("../models/OrderModel");
 const { User } = require("../models/UserModel");
 const superAdminMiddleware = require("../middlewares/super_admin_middleware");
+const { Carousel } = require("../models/CarouselModel");
 
 //Getting all the users on the application
 superAdminRouter.get(
@@ -97,5 +97,24 @@ superAdminRouter.delete(
   }
 );
 //deal of the day feature
+
+//add images for carousel
+superAdminRouter.post(
+  "/superadmin/addCarouselImages",
+  superAdminMiddleware,
+  async (req, res) => {
+    try {
+      const { images } = req.body;
+      let carouselImages = new Carousel({
+        images: images,
+      });
+
+      carouselImages = await carouselImages.save();
+      res.json(carouselImages);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
 
 module.exports = superAdminRouter;

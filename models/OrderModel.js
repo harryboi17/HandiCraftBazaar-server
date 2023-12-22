@@ -6,6 +6,10 @@ const orderSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  phoneNumber: {
+    type: String,
+    required: true,
+  },
   userId: {
     type: String,
     required: true,
@@ -14,12 +18,15 @@ const orderSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  stripePaymentId: {
+    type: String,
+    default: "",
+  },
   product: ProductSchema,
   quantity: {
     type: Number,
     required: true,
   },
-
   totalPrice: {
     type: Number,
     required: true,
@@ -28,9 +35,14 @@ const orderSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  paymentMode: {
+    type: Number,
+    required: true,
+    default: 0, //0 means COD, 1 means stripe
+  },
   status: {
     type: Number,
-    default: 0, //0 means order placed, 1 means dispatched by seller, 2 means reached at city of user, 3 means delivered successfully
+    default: 0, //0 means order placed, 1 means dispatched by seller, 2 means reached at city of user, 3 means delivered successfully, 5 cancelled
   },
 });
 

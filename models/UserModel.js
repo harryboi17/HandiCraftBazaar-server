@@ -33,6 +33,10 @@ const userSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  phoneNumber: {
+    type: String,
+    default: "",
+  },
   type: {
     type: String,
     default: "user", //user, admin, super admin
